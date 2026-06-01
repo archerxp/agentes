@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GameProZone - Juegos y tecnología al máximo</title>
+<meta name="description" content="Reseñas y guías de productos gaming">
+<style>
+  :root {--accent:#00ff88;--bg:#0a0a0f;--card:#12121a;--text:#e2e2f0;--muted:#6b6b8a}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
+  header{background:#0f0f18;border-bottom:1px solid #1e1e2e;padding:20px;text-align:center}
+  header h1{font-size:2rem;font-weight:900;color:var(--accent)}
+  header p{color:var(--muted);font-size:0.9rem;margin-top:6px}
+  main{max-width:900px;margin:40px auto;padding:0 20px}
+  .articles{display:grid;gap:20px}
+  article{background:var(--card);border:1px solid #1e1e2e;border-radius:12px;padding:24px}
+  article h2{font-size:1.2rem;margin-bottom:8px}
+  article h2 a{color:var(--text);text-decoration:none}
+  article h2 a:hover{color:var(--accent)}
+  article .meta{color:var(--muted);font-size:0.8rem;margin-bottom:10px}
+  article p{color:var(--muted);font-size:0.9rem}
+  footer{text-align:center;padding:40px;color:var(--muted);font-size:0.8rem;border-top:1px solid #1e1e2e;margin-top:60px}
+  .tag{background:rgba(0,255,136,0.1);color:var(--accent);border:1px solid rgba(0,255,136,0.3);padding:2px 10px;border-radius:20px;font-size:0.75rem}
+</style>
+</head>
+<body>
+<header>
+  <h1>🎮 GameProZone</h1>
+  <p>Juegos y tecnología al máximo</p>
+</header>
+<main>
+  <div id="articles" class="articles">
+    <p style="color:var(--muted);text-align:center;padding:40px">Cargando artículos...</p>
+  </div>
+</main>
+<footer>
+  <p>GameProZone © 2026 · Afiliado de Amazon · Los precios pueden variar</p>
+  <p style="margin-top:8px;font-size:0.72rem">Como Asociado de Amazon, obtenemos ingresos por las compras adscritas que cumplen los requisitos aplicables.</p>
+</footer>
+<script>
+  // Carga artículos desde el índice
+  fetch('/gaming-income-os/docs/articles/index.json')
+    .then(r=>r.json())
+    .then(data=>{
+      const c=document.getElementById('articles');
+      if(!data.articles||!data.articles.length){c.innerHTML='<p style="color:var(--muted);text-align:center;padding:40px">Pronto habrá artículos aquí.</p>';return}
+      c.innerHTML=data.articles.slice(0,20).map(a=>`
+        <article>
+          <div class="meta">${a.date} · <span class="tag">Gaming</span></div>
+          <h2><a href="${a.url}">${a.title}</a></h2>
+          <p>${a.excerpt}</p>
+        </article>`).join('');
+    }).catch(()=>{document.getElementById('articles').innerHTML='<p style="color:var(--muted);text-align:center;padding:40px">Artículos próximamente.</p>'});
+</script>
+</body>
+</html>
