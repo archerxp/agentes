@@ -32,8 +32,9 @@ GITHUB_API = f"https://api.github.com/repos/{GITHUB_REPO}"
 
 # ── Gemini helper ────────────────────────────────────────────
 def gemini(prompt, temperature=0.7):
-    key = GROQ_KEY
+    key = GROQ_KEY.strip()
     print(f"  DEBUG key length: {len(key)}, starts: {key[:4]}")
+    print(f"  DEBUG key bytes finales: {[ord(c) for c in key[-5:]]}")
     r = requests.post(GROQ_API,
         headers={"Content-Type": "application/json",
                  "Authorization": f"Bearer {key}"},
