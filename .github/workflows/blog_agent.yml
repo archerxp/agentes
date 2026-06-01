@@ -1,0 +1,40 @@
+name: 📝 Blog + Pinterest Agent — Diario
+
+on:
+  schedule:
+    - cron: '0 9 * * *'   # Cada día a las 9am UTC
+  workflow_dispatch:        # También manual
+
+jobs:
+  blog-and-pinterest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write       # Necesario para publicar en GitHub Pages
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Run Blog + Pinterest Agent
+        env:
+          GEMINI_API_KEY:     ${{ secrets.GEMINI_API_KEY }}
+          GITHUB_TOKEN:       ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPO:        ${{ github.repository }}
+          PINTEREST_TOKEN:    ${{ secrets.PINTEREST_TOKEN }}
+          AMAZON_AFFILIATE_TAG: ${{ secrets.AMAZON_AFFILIATE_TAG }}
+        run: python agents/blog/daily_agent.py
+
+      - name: Enable GitHub Pages (first run)
+        if: always()
+        run: |
+          echo "✓ Artículo publicado. Asegúrate de que GitHub Pages esté activado:"
+          echo "  Repo → Settings → Pages → Source: Deploy from branch → main → /docs"

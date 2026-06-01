@@ -1,0 +1,39 @@
+name: 🎬 YouTube Agent — 2x semana
+
+on:
+  schedule:
+    - cron: '0 11 * * 3'   # Miércoles 11am UTC
+    - cron: '0 11 * * 6'   # Sábado 11am UTC
+  workflow_dispatch:
+
+jobs:
+  youtube:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update -q
+          sudo apt-get install -y ffmpeg fonts-dejavu
+
+      - name: Install Python dependencies
+        run: pip install requests gtts
+
+      - name: Run YouTube Agent
+        env:
+          GEMINI_API_KEY:         ${{ secrets.GEMINI_API_KEY }}
+          GITHUB_TOKEN:           ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPO:            ${{ github.repository }}
+          YOUTUBE_ACCESS_TOKEN:   ${{ secrets.YOUTUBE_ACCESS_TOKEN }}
+          ELEVENLABS_API_KEY:     ${{ secrets.ELEVENLABS_API_KEY }}
+          AMAZON_AFFILIATE_TAG:   ${{ secrets.AMAZON_AFFILIATE_TAG }}
+        run: python agents/youtube/weekly_agent.py
