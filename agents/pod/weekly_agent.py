@@ -1,7 +1,7 @@
 """
-Gaming POD Weekly Agent — Powered by Google Gemini (GRATIS)
+Gaming POD Weekly Agent — Powered by Groq (GRATIS)
 Corre cada lunes via GitHub Actions:
-1. Detecta top 3 tendencias gaming con búsqueda web
+1. Detecta top 3 tendencias gaming
 2. Genera 3 diseños por tendencia (9 total)
 3. Genera imágenes con Ideogram API
 4. Manda email con todo listo para subir a Redbubble
@@ -13,94 +13,68 @@ from email.mime.text import MIMEText
 from email.mime.image import MIMEImage
 from datetime import datetime
 
-GEMINI_API  = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent"
+GROQ_API     = "https://api.groq.com/openai/v1/chat/completions"
 IDEOGRAM_API = "https://api.ideogram.ai/generate"
 
-GEMINI_KEY   = os.environ["GEMINI_API_KEY"]
+GROQ_KEY     = os.environ.get("GROQ_API_KEY", "").strip()[:56]
 IDEOGRAM_KEY = os.environ["IDEOGRAM_API_KEY"]
 GMAIL_USER   = os.environ["GMAIL_USER"]
 GMAIL_PASS   = os.environ["GMAIL_APP_PASSWORD"]
 EMAIL_TO     = os.environ["EMAIL_TO"]
 
-def gemini(prompt):
-    """Llama a Gemini 1.5 Flash y devuelve JSON parseado."""
-    r = requests.post(
-        f"{GEMINI_API}?key={GEMINI_KEY}",
-        headers={"Content-Type": "application/json"},
-        json={
-            "contents": [{"parts": [{"text": prompt}]}],
-            "generationConfig": {
-                "temperature": 0.8,
-                "maxOutputTokens": 1500
-            }
-        }
-    )
+def groq(prompt):
+    r = requests.post(GROQ_API,
+        headers={"Content-Type": "application/json",
+                 "Authorization": f"Bearer {GROQ_KEY}"},
+        json={"model": "llama-3.3-70b-versatile",
+              "messages": [{"role": "user", "content": prompt}],
+              "temperature": 0.8, "max_tokens": 1500})
     r.raise_for_status()
-    text = r.json()["candidates"][0]["content"]["parts"][0]["text"]
+    text = r.json()["choices"][0]["message"]["content"]
     clean = re.sub(r"```json|```", "", text).strip()
     return json.loads(clean)
 
 def get_trends():
     today = datetime.now().strftime("%Y-%m-%d")
-    prompt = f"""Hoy es {today}. Eres experto en tendencias gaming y print-on-demand.
-Basándote en tu conocimiento de los juegos más populares, tendencias virales de gaming,
-juegos recientes con mucha comunidad, memes gaming y juegos con grandes comunidades en
-Steam, Twitch y Reddit, identifica las 3 tendencias gaming MÁS relevantes ahora mismo.
+    return groq(f"""Hoy es {today}. Eres experto en tendencias gaming y print-on-demand.
+Identifica las 3 tendencias gaming MÁS relevantes ahora mismo basándote en juegos populares,
+virales en TikTok, DLCs recientes, remasters y grandes comunidades en Steam/Twitch/Reddit.
 
-Responde SOLO con JSON válido, sin markdown, sin backticks, sin texto adicional:
-{{"trends":[{{"name":"nombre del juego o tendencia","reason":"por qué está popular ahora (max 6 palabras)","score":85}}]}}
+Responde SOLO JSON sin markdown:
+{{"trends":[{{"name":"nombre del juego o tendencia","reason":"por qué está popular (max 6 palabras)","score":85}}]}}
 
-Devuelve exactamente 3 tendencias ordenadas de mayor a menor score (60-99).
-Ejemplos de buenas tendencias: juegos con DLC reciente, juegos virales en TikTok, remasters, temporadas nuevas."""
-    return gemini(prompt)
+Devuelve exactamente 3 tendencias ordenadas de mayor a menor score (60-99).""")
 
 def get_designs(trend):
-    prompt = f"""Eres experto en print-on-demand para Redbubble y diseño gaming.
-Genera diseños creativos y vendibles para la tendencia: "{trend['name']}"
-Contexto: {trend['reason']}
+    return groq(f"""Eres experto en print-on-demand para Redbubble y diseño gaming.
+Genera diseños creativos y vendibles para: "{trend['name']}" — {trend['reason']}
 
-Responde SOLO con JSON válido, sin markdown, sin backticks:
-{{"designs":[
-  {{
-    "title": "nombre del diseño",
-    "description": "descripción visual breve de 1-2 oraciones",
-    "products": ["Camiseta", "Taza", "Sticker"],
-    "tags": ["tag1","tag2","tag3","tag4","tag5","tag6","tag7","tag8"],
-    "imagePrompt": "very detailed english prompt for AI image generation, specific art style, colors, composition, suitable for t-shirt printing",
-    "margin": 10
-  }}
-]}}
+Responde SOLO JSON sin markdown:
+{{"designs":[{{"title":"nombre del diseño","description":"descripción visual breve","products":["Camiseta","Taza","Sticker"],"tags":["t1","t2","t3","t4","t5","t6","t7","t8"],"imagePrompt":"very detailed english prompt for AI image generation, specific art style, colors, composition, t-shirt ready","margin":10}}]}}
 
-Genera exactamente 3 diseños con estilos variados:
+Genera exactamente 3 diseños variados:
 1. Tipográfico (texto creativo con tipografía llamativa)
 2. Ilustración detallada (personaje o escena del juego)
 3. Pixel art / retro (estilo 8-bit o 16-bit)
-
-Los prompts de imagen deben ser muy específicos en inglés, listos para Ideogram AI.
-El margin es número entre 7 y 14."""
-    return gemini(prompt)
+El margin es número entre 7 y 14.""")
 
 def generate_image(prompt):
     try:
-        r = requests.post(
-            IDEOGRAM_API,
+        r = requests.post(IDEOGRAM_API,
             headers={"Api-Key": IDEOGRAM_KEY, "Content-Type": "application/json"},
-            json={
-                "image_request": {
-                    "prompt": prompt + ", transparent background, t-shirt design ready, high resolution, clean edges",
-                    "aspect_ratio": "ASPECT_1_1",
-                    "model": "V_2",
-                    "magic_prompt_option": "AUTO"
-                }
-            }
-        )
+            json={"image_request": {
+                "prompt": prompt + ", transparent background, t-shirt design ready, high resolution, clean edges",
+                "aspect_ratio": "ASPECT_1_1",
+                "model": "V_2",
+                "magic_prompt_option": "AUTO"
+            }})
         r.raise_for_status()
         img_url = r.json()["data"][0]["url"]
-        img_bytes = requests.get(img_url)
-        img_bytes.raise_for_status()
-        return img_bytes.content
+        img_r = requests.get(img_url)
+        img_r.raise_for_status()
+        return img_r.content
     except Exception as e:
-        print(f"  ⚠ Error generando imagen: {e}")
+        print(f"  ⚠ Error imagen: {e}")
         return None
 
 def build_email(all_results, date_str):
@@ -179,14 +153,14 @@ body{{font-family:-apple-system,sans-serif;background:#0a0a0f;color:#e2e2f0;marg
 
     html += """
 <div class="steps">
-  <h3 style="color:#e2e2f0;margin:0 0 14px;font-size:0.92rem">🗺️ Cómo subir a Redbubble (15–20 min total)</h3>
-  <div class="step"><div class="num">1</div><div class="step-text">Descarga las imágenes adjuntas en este email</div></div>
-  <div class="step"><div class="num">2</div><div class="step-text">Ve a redbubble.com → Add New Work → sube cada imagen</div></div>
-  <div class="step"><div class="num">3</div><div class="step-text">Copia el título y los tags de este email → pégalos en Redbubble</div></div>
-  <div class="step"><div class="num">4</div><div class="step-text">Activa los productos recomendados, define tu margen → Publica</div></div>
+  <h3 style="color:#e2e2f0;margin:0 0 14px;font-size:0.92rem">🗺️ Cómo subir a Redbubble (15-20 min)</h3>
+  <div class="step"><div class="num">1</div><div class="step-text">Descarga las imágenes adjuntas</div></div>
+  <div class="step"><div class="num">2</div><div class="step-text">Redbubble → Add New Work → sube cada imagen</div></div>
+  <div class="step"><div class="num">3</div><div class="step-text">Copia título y tags de este email → pégalos en Redbubble</div></div>
+  <div class="step"><div class="num">4</div><div class="step-text">Activa productos, define margen → Publica</div></div>
   <div class="step"><div class="num">5</div><div class="step-text">El próximo lunes recibirás nuevos diseños automáticamente</div></div>
 </div>
-<div class="footer">Gaming POD Agent • Gemini 1.5 Flash + Ideogram • GitHub Actions</div>
+<div class="footer">Gaming POD Agent • Groq + Ideogram • GitHub Actions</div>
 </div></body></html>"""
 
     return html, image_attachments
@@ -210,7 +184,7 @@ def send_email(html_body, image_attachments, date_str):
 
 def main():
     date_str = datetime.now().strftime("%d/%m/%Y")
-    print("🔍 Detectando tendencias gaming con Gemini...")
+    print("🔍 Detectando tendencias gaming...")
     trends = get_trends().get("trends", [])
     print(f"✓ Tendencias: {[t['name'] for t in trends]}")
 
