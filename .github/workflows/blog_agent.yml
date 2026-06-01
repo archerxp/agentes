@@ -24,6 +24,13 @@ jobs:
       - name: Install dependencies
         run: pip install requests
 
+      - name: Debug secrets
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+        run: |
+          echo "Key length: ${#GROQ_API_KEY}"
+          echo "Key starts: ${GROQ_API_KEY:0:4}"
+
       - name: Run Blog + Pinterest Agent
         env:
           GROQ_API_KEY:        ${{ secrets.GROQ_API_KEY }} }}
