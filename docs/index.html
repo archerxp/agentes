@@ -40,7 +40,7 @@
 </footer>
 <script>
   // Carga artículos desde el índice
-  fetch('/agentes/docs/articles/index.json')
+  fetch('/agentes/articles/index.json')
     .then(r=>r.json())
     .then(data=>{
       const c=document.getElementById('articles');
