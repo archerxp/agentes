@@ -21,7 +21,7 @@ from datetime import datetime
 from pathlib import Path
 
 # ── API Keys ────────────────────────────────────────────────
-GROQ_KEY = os.environ.get("GROQ_API_KEY", "").strip()[:56]
+GROQ_KEY         = os.environ["GROQ_API_KEY"]
 GITHUB_TOKEN     = os.environ["GITHUB_TOKEN"]          # automático en Actions
 GITHUB_REPO      = os.environ["GITHUB_REPO"]           # ej: "tuusuario/gaming-income-os"
 PINTEREST_TOKEN  = os.environ.get("PINTEREST_TOKEN", "") # opcional al inicio
@@ -32,17 +32,12 @@ GITHUB_API = f"https://api.github.com/repos/{GITHUB_REPO}"
 
 # ── Gemini helper ────────────────────────────────────────────
 def gemini(prompt, temperature=0.7):
-    key = GROQ_KEY.strip()
-    print(f"  DEBUG key length: {len(key)}, starts: {key[:4]}")
-    print(f"  DEBUG key bytes finales: {[ord(c) for c in key[-5:]]}")
     r = requests.post(GROQ_API,
         headers={"Content-Type": "application/json",
-                 "Authorization": f"Bearer {key}"},
+                 "Authorization": f"Bearer {GROQ_KEY}"},
         json={"model": "llama-3.3-70b-versatile",
               "messages": [{"role": "user", "content": prompt}],
               "temperature": temperature, "max_tokens": 2000})
-    print(f"  DEBUG status: {r.status_code}")
-    print(f"  DEBUG response: {r.text[:200]}")
     r.raise_for_status()
     text = r.json()["choices"][0]["message"]["content"]
     return re.sub(r"```json|```", "", text).strip()
@@ -133,19 +128,43 @@ Título: {keyword_data['article_title']}
 Productos a recomendar: {', '.join(keyword_data['amazon_products'])}
 Tag de afiliado Amazon: {amazon_tag}
 
-FORMATO: HTML limpio listo para publicar en blog. Incluye:
-- <h1> con el título exacto
-- Introducción de 100 palabras con la keyword
-- Al menos 4 secciones <h2> con contenido útil
-- Lista de productos recomendados con links de afiliado Amazon:
-  formato: <a href="https://amazon.es/s?k=PRODUCTO&tag={amazon_tag}">Ver precio en Amazon</a>
-- Sección FAQ con 3 preguntas frecuentes
-- Conclusión con call to action
-- Meta description en comentario HTML al inicio: <!-- META: descripción aquí -->
-- Total: 900-1200 palabras
-- NO incluir DOCTYPE ni <html> ni <head> — solo el contenido del artículo
+FORMATO: HTML visual y atractivo listo para publicar. USA SOLO estas etiquetas HTML, NUNCA Markdown:
 
-Escribe en español natural, útil y que ayude genuinamente al lector a tomar una decisión de compra.""",
+<!-- META: descripción SEO del artículo aquí (160 chars) -->
+
+<h1>Título del artículo</h1>
+
+<p>Introducción de 100 palabras con la keyword...</p>
+
+<h2>Sección 1</h2>
+<p>Contenido...</p>
+
+Para cada producto recomendado usa esta estructura de tarjeta visual:
+<div class="product-card">
+  <h3>Nombre del Producto</h3>
+  <p>Descripción breve de 2-3 líneas explicando por qué es bueno.</p>
+  <ul>
+    <li>✅ Ventaja 1</li>
+    <li>✅ Ventaja 2</li>
+    <li>✅ Ventaja 3</li>
+  </ul>
+  <a href="https://amazon.es/s?k=PRODUCTO&tag={amazon_tag}" class="affiliate-btn">🛒 Ver precio en Amazon</a>
+</div>
+
+Para el FAQ usa:
+<div class="faq-item">
+  <h3>¿Pregunta frecuente?</h3>
+  <p>Respuesta clara y útil.</p>
+</div>
+
+REGLAS ESTRICTAS:
+- NUNCA uses ## ni ** ni * ni ningún símbolo Markdown
+- SOLO etiquetas HTML: h1, h2, h3, p, ul, li, div, a, strong
+- Al menos 3 tarjetas product-card con botón de Amazon
+- Al menos 3 faq-item
+- Conclusión con call to action en <p>
+- Total: 900-1200 palabras
+- NO incluir DOCTYPE ni html ni head ni body""",
     temperature=0.6)
 
 # ── Pinterest pins generator ─────────────────────────────────
