@@ -7,7 +7,7 @@ Alterna formatos: curiosidad, hilo, pregunta
 import os, json, re, requests, base64, time
 from datetime import datetime
 
-GROQ_KEY            = os.environ["GROQ_API_KEY"]
+GROQ_KEY = os.environ.get("GROQ_API_KEY", "").strip()[:56]
 TWITTER_KEY         = os.environ.get("TWITTER_API_KEY", "")
 TWITTER_SECRET      = os.environ.get("TWITTER_API_SECRET", "")
 TWITTER_TOKEN       = os.environ.get("TWITTER_ACCESS_TOKEN", "")
