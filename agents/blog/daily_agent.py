@@ -21,7 +21,7 @@ from datetime import datetime
 from pathlib import Path
 
 # ── API Keys ────────────────────────────────────────────────
-GROQ_KEY         = os.environ["GROQ_API_KEY"]
+GROQ_KEY         = os.environ["GROQ_API_KEY"].strip()
 GITHUB_TOKEN     = os.environ["GITHUB_TOKEN"]          # automático en Actions
 GITHUB_REPO      = os.environ["GITHUB_REPO"]           # ej: "tuusuario/gaming-income-os"
 PINTEREST_TOKEN  = os.environ.get("PINTEREST_TOKEN", "") # opcional al inicio
