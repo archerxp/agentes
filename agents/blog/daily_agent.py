@@ -21,27 +21,26 @@ from datetime import datetime
 from pathlib import Path
 
 # ── API Keys ────────────────────────────────────────────────
-GEMINI_KEY       = os.environ["GEMINI_API_KEY"]
+GROQ_KEY         = os.environ["GROQ_API_KEY"]
 GITHUB_TOKEN     = os.environ["GITHUB_TOKEN"]          # automático en Actions
 GITHUB_REPO      = os.environ["GITHUB_REPO"]           # ej: "tuusuario/gaming-income-os"
 PINTEREST_TOKEN  = os.environ.get("PINTEREST_TOKEN", "") # opcional al inicio
 AMAZON_TAG       = os.environ.get("AMAZON_AFFILIATE_TAG", "gamingincome-20")
 
-GEMINI_API = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent"
+GROQ_API   = "https://api.groq.com/openai/v1/chat/completions"
 GITHUB_API = f"https://api.github.com/repos/{GITHUB_REPO}"
 
 # ── Gemini helper ────────────────────────────────────────────
 def gemini(prompt, temperature=0.7):
-    r = requests.post(
-        f"{GEMINI_API}?key={GEMINI_KEY}",
-        headers={"Content-Type": "application/json"},
-        json={"contents": [{"parts": [{"text": prompt}]}],
-              "generationConfig": {"temperature": temperature, "maxOutputTokens": 2000}}
-    )
+    r = requests.post(GROQ_API,
+        headers={"Content-Type": "application/json",
+                 "Authorization": f"Bearer {GROQ_KEY}"},
+        json={"model": "llama-3.3-70b-versatile",
+              "messages": [{"role": "user", "content": prompt}],
+              "temperature": temperature, "max_tokens": 2000})
     r.raise_for_status()
-    text = r.json()["candidates"][0]["content"]["parts"][0]["text"]
-    clean = re.sub(r"```json|```", "", text).strip()
-    return clean
+    text = r.json()["choices"][0]["message"]["content"]
+    return re.sub(r"```json|```", "", text).strip()
 
 def gemini_json(prompt):
     return json.loads(gemini(prompt))

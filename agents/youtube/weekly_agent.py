@@ -11,7 +11,7 @@ Corre 2 veces por semana via GitHub Actions:
 import os, json, re, time, requests, tempfile, subprocess, base64
 from datetime import datetime
 
-GEMINI_KEY     = os.environ["GEMINI_API_KEY"]
+GROQ_KEY       = os.environ["GROQ_API_KEY"]
 YOUTUBE_TOKEN  = os.environ.get("YOUTUBE_ACCESS_TOKEN", "")
 ELEVENLABS_KEY = os.environ.get("ELEVENLABS_API_KEY", "")
 AMAZON_TAG     = os.environ.get("AMAZON_AFFILIATE_TAG", "gamingincome-20")
@@ -21,12 +21,14 @@ GITHUB_API     = f"https://api.github.com/repos/{GITHUB_REPO}"
 GEMINI_API     = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent"
 
 def gemini(prompt, temperature=0.8):
-    r = requests.post(f"{GEMINI_API}?key={GEMINI_KEY}",
-        headers={"Content-Type": "application/json"},
-        json={"contents": [{"parts": [{"text": prompt}]}],
-              "generationConfig": {"temperature": temperature, "maxOutputTokens": 2000}})
+    r = requests.post(GROQ_API,
+        headers={"Content-Type": "application/json",
+                 "Authorization": f"Bearer {GROQ_KEY}"},
+        json={"model": "llama-3.3-70b-versatile",
+              "messages": [{"role": "user", "content": prompt}],
+              "temperature": temperature, "max_tokens": 2000})
     r.raise_for_status()
-    text = r.json()["candidates"][0]["content"]["parts"][0]["text"]
+    text = r.json()["choices"][0]["message"]["content"]
     return re.sub(r"```json|```", "", text).strip()
 
 def gemini_json(prompt): return json.loads(gemini(prompt))

@@ -7,7 +7,7 @@ Alterna formatos: curiosidad, hilo, pregunta
 import os, json, re, requests, base64, time
 from datetime import datetime
 
-GEMINI_KEY          = os.environ["GEMINI_API_KEY"]
+GROQ_KEY            = os.environ["GROQ_API_KEY"]
 TWITTER_KEY         = os.environ.get("TWITTER_API_KEY", "")
 TWITTER_SECRET      = os.environ.get("TWITTER_API_SECRET", "")
 TWITTER_TOKEN       = os.environ.get("TWITTER_ACCESS_TOKEN", "")
@@ -16,15 +16,17 @@ AMAZON_TAG          = os.environ.get("AMAZON_AFFILIATE_TAG", "gamingincome-20")
 GITHUB_TOKEN        = os.environ["GITHUB_TOKEN"]
 GITHUB_REPO         = os.environ["GITHUB_REPO"]
 GITHUB_API          = f"https://api.github.com/repos/{GITHUB_REPO}"
-GEMINI_API          = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent"
+GROQ_API            = "https://api.groq.com/openai/v1/chat/completions"
 
 def gemini_json(prompt):
-    r = requests.post(f"{GEMINI_API}?key={GEMINI_KEY}",
-        headers={"Content-Type": "application/json"},
-        json={"contents": [{"parts": [{"text": prompt}]}],
-              "generationConfig": {"temperature": 0.9, "maxOutputTokens": 1000}})
+    r = requests.post(GROQ_API,
+        headers={"Content-Type": "application/json",
+                 "Authorization": f"Bearer {GROQ_KEY}"},
+        json={"model": "llama-3.3-70b-versatile",
+              "messages": [{"role": "user", "content": prompt}],
+              "temperature": 0.9, "max_tokens": 1000})
     r.raise_for_status()
-    text = r.json()["candidates"][0]["content"]["parts"][0]["text"]
+    text = r.json()["choices"][0]["message"]["content"]
     return json.loads(re.sub(r"```json|```", "", text).strip())
 
 def github_put(path, content, message):
