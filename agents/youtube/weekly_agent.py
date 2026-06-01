@@ -11,7 +11,7 @@ Corre 2 veces por semana via GitHub Actions:
 import os, json, re, time, requests, tempfile, subprocess, base64
 from datetime import datetime
 
-GROQ_KEY       = os.environ["GROQ_API_KEY"]
+GROQ_KEY = os.environ.get("GROQ_API_KEY", "").strip()[:56]
 YOUTUBE_TOKEN  = os.environ.get("YOUTUBE_ACCESS_TOKEN", "")
 ELEVENLABS_KEY = os.environ.get("ELEVENLABS_API_KEY", "")
 AMAZON_TAG     = os.environ.get("AMAZON_AFFILIATE_TAG", "gamingincome-20")
