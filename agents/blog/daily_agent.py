@@ -32,12 +32,16 @@ GITHUB_API = f"https://api.github.com/repos/{GITHUB_REPO}"
 
 # ── Gemini helper ────────────────────────────────────────────
 def gemini(prompt, temperature=0.7):
+    key = GROQ_KEY
+    print(f"  DEBUG key length: {len(key)}, starts: {key[:4]}")
     r = requests.post(GROQ_API,
         headers={"Content-Type": "application/json",
-                 "Authorization": f"Bearer {GROQ_KEY}"},
+                 "Authorization": f"Bearer {key}"},
         json={"model": "llama-3.3-70b-versatile",
               "messages": [{"role": "user", "content": prompt}],
               "temperature": temperature, "max_tokens": 2000})
+    print(f"  DEBUG status: {r.status_code}")
+    print(f"  DEBUG response: {r.text[:200]}")
     r.raise_for_status()
     text = r.json()["choices"][0]["message"]["content"]
     return re.sub(r"```json|```", "", text).strip()
