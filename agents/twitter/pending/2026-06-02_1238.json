@@ -1,0 +1,26 @@
+{
+  "format": "hilo",
+  "topic": "Curiosidades gaming",
+  "posts": [
+    {
+      "text": "¿Sabías que el primer juego de Mario se llamaba originalmente 'Jumpman'? 🤯👀 #Gaming #Videojuegos #GamersLife",
+      "is_first": true
+    },
+    {
+      "text": "1/4 ¿Qué juego crees que ha tenido el mayor impacto en la industria del gaming? 🤔👾 #Gaming #PCGaming",
+      "is_first": false
+    },
+    {
+      "text": "2/4 Para mí, es The Legend of Zelda: Ocarina of Time 🏹🔥. Revolucionó la forma en que jugábamos y explorábamos mundos virtuales 🌐 #Gaming #Videojuegos",
+      "is_first": false
+    },
+    {
+      "text": "3/4 Otro juego que cambió el juego (jeje) fue Portal 🚪💡. Su ingenio y originalidad nos hicieron replantearnos la forma de resolver puzzles 🤓 #Gaming #PCGaming",
+      "is_first": false
+    },
+    {
+      "text": "4/4 ¿Cuál es tu juego favorito de todos los tiempos? 🤔👀 Comparte conmigo y otros gamers 🤜🤛 #GamersLife #Videojuegos",
+      "is_first": false
+    }
+  ]
+}
