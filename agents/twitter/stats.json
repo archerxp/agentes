@@ -1,7 +1,13 @@
 {
-  "total_posts": 8,
+  "total_posts": 9,
   "total_published": 0,
   "history": [
+    {
+      "date": "2026-06-02 22:54",
+      "topic": "consolas vs pc",
+      "format": "pregunta",
+      "published": false
+    },
     {
       "date": "2026-06-02 18:28",
       "topic": "Juegos de Rol",
