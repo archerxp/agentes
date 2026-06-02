@@ -1,7 +1,13 @@
 {
-  "total_posts": 2,
+  "total_posts": 7,
   "total_published": 0,
   "history": [
+    {
+      "date": "2026-06-02 12:38",
+      "topic": "Curiosidades gaming",
+      "format": "hilo",
+      "published": false
+    },
     {
       "date": "2026-06-01 22:54",
       "topic": "mejor juego de todos los tiempos",
