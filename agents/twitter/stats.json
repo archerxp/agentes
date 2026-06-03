@@ -1,7 +1,13 @@
 {
-  "total_posts": 9,
+  "total_posts": 14,
   "total_published": 0,
   "history": [
+    {
+      "date": "2026-06-03 13:13",
+      "topic": "nuevos juegos",
+      "format": "hilo",
+      "published": false
+    },
     {
       "date": "2026-06-02 22:54",
       "topic": "consolas vs pc",
