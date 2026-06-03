@@ -1,0 +1,26 @@
+{
+  "format": "hilo",
+  "topic": "nuevos juegos",
+  "posts": [
+    {
+      "text": "¿Sabías que el jugador más rápido en completar Dark Souls es un gamer que lo hizo en solo 25 minutos? 🤯👾 #Gaming #Videojuegos #Speedrun",
+      "is_first": true
+    },
+    {
+      "text": "1/4 ¡Los juegos de supervivencia son lo mejor! Los juegos como Minecraft y Rust te permiten explorar y construir en un mundo abierto. 🌐🏗️ #Gaming #PCGaming",
+      "is_first": false
+    },
+    {
+      "text": "2/4 La IA en los juegos es cada vez más realista. Los juegos como The Last of Us y Red Dead Redemption tienen personajes con comportamientos muy creíbles. 🤖👀 #Gaming #Videojuegos",
+      "is_first": false
+    },
+    {
+      "text": "3/4 La comunidad de gamers es increíble. Los eventos de gaming y las transmisiones en vivo nos permiten conectarnos con otros jugadores de todo el mundo. 🌎👫 #Gaming #GamersLife",
+      "is_first": false
+    },
+    {
+      "text": "4/4 ¿Cuál es el mejor juego de todos los tiempos? ¿Es un clásico como Super Mario Bros. o algo más reciente como God of War? ¡Comparte tus opiniones! 🤔👾 #Gaming #Videojuegos #GamersLife #PCGaming",
+      "is_first": false
+    }
+  ]
+}
