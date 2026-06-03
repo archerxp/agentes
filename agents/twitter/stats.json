@@ -1,7 +1,13 @@
 {
-  "total_posts": 15,
+  "total_posts": 16,
   "total_published": 0,
   "history": [
+    {
+      "date": "2026-06-03 22:57",
+      "topic": "Debate gaming",
+      "format": "pregunta",
+      "published": false
+    },
     {
       "date": "2026-06-03 18:38",
       "topic": "juegos de rol",
