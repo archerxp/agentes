@@ -1,0 +1,26 @@
+{
+  "format": "hilo",
+  "topic": "Juegos de supervivencia",
+  "posts": [
+    {
+      "text": "¡Sorpresa! 🤯 El juego de supervivencia más vendido de la historia es Minecraft 🌐️ #Gaming #Videojuegos #GamersLife",
+      "is_first": true
+    },
+    {
+      "text": "1/4 📊 ¿Sabías que Minecraft ha vendido más de 200 millones de copias en todo el mundo? 🌎️ #Gaming #Videojuegos #PCGaming",
+      "is_first": false
+    },
+    {
+      "text": "2/4 🎮 Los juegos de supervivencia como Minecraft y Rust nos permiten explorar mundos nuevos y desafiar nuestros límites 🌐️ #Gaming #Videojuegos #GamersLife",
+      "is_first": false
+    },
+    {
+      "text": "3/4 🤝 La comunidad de jugadores de supervivencia es una de las más unidas y creativas 🌈️ #Gaming #Videojuegos #PCGaming",
+      "is_first": false
+    },
+    {
+      "text": "4/4 🎮 ¿Cuál es tu juego de supervivencia favorito? 🤔 Comparte conmigo tus experiencias 📝️ #Gaming #Videojuegos #GamersLife",
+      "is_first": false
+    }
+  ]
+}
