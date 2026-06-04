@@ -1,7 +1,13 @@
 {
-  "total_posts": 22,
+  "total_posts": 23,
   "total_published": 0,
   "history": [
+    {
+      "date": "2026-06-04 22:15",
+      "topic": "mejor plataforma de gaming",
+      "format": "pregunta",
+      "published": false
+    },
     {
       "date": "2026-06-04 17:37",
       "topic": "Juegos de supervivencia",
