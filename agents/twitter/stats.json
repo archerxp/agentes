@@ -1,7 +1,13 @@
 {
-  "total_posts": 16,
+  "total_posts": 17,
   "total_published": 0,
   "history": [
+    {
+      "date": "2026-06-04 11:49",
+      "topic": "Records de juegos",
+      "format": "curiosidad",
+      "published": false
+    },
     {
       "date": "2026-06-03 22:57",
       "topic": "Debate gaming",
